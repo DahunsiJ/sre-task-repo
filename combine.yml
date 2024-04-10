@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-alertmanager
+data:
+  alertmanager.yml: |
+    global:
+      resolve_timeout: 1m
+
+    receivers:
+    - name: 'notifications'
+      email_configs:
+      - to: dahunsijustus06@gmail.com
+        from: dahunsijustus06@gmail.com
+        smarthost: smtp.gmail.com:587
+        auth_username: dahunsijustus06@gmail.com
+        auth_identity: dahunsijustus06@gmail.com
+        auth_password: jgiy xomn mdbq fluf
+        send_resolved: true
+        headers:
+          subject: "Prometheus - Alert"
+          text: "{{ range .Alerts }} Hi, \n{{ .Annotations.summary }}\n{{ .Annotations.description }} {{end}}"
+
+      slack_configs:
+      - channel: '#sre-updates'
+        send_resolved: true
+        api_url: 'https://hooks.slack.com/services/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'
+
+    route:
+      group_wait: 10s
+      group_interval: 2m
+      receiver: 'notifications'
+      repeat_interval: 2m
